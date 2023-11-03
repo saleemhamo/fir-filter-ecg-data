@@ -50,3 +50,35 @@ def plot(x, y, title, x_label, y_label, plot_name='', log_scale=False):
     if not (plot_name is None or plot_name == ''):
         mkdir_if_not_exists('./output_images')
         plt.savefig('./output_images/' + plot_name + ".svg", format='svg')
+
+
+""" Frequency domain functions """
+
+def fft(signal):
+    return np.fft.fft(signal)
+
+
+def ifft(fft):
+    return np.fft.ifft(fft)
+
+
+def convert_to_frequency(signal,sample_rate):
+    fft_result = fft(signal)
+    frequency_values = np.fft.fftfreq(fft_result.size, 1 / sample_rate)
+    return fft_result,frequency_values
+    
+
+def plot_in_frequency(frequency_values, fft_result, title, x_label, y_label, plot_name='', log_scale=False):
+    plt.figure(figsize=(10, 6))
+    plt.plot(frequency_values[frequency_values>0], abs(fft_result[frequency_values>0]), color='g')
+    plt.title(title)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.title((title))
+    plt.grid(True)
+    plt.xscale('log')
+    plt.show()
+
+    if not (plot_name is None or plot_name == ''):
+        mkdir_if_not_exists('./output_images')
+        plt.savefig('./output_images/' + plot_name + ".svg", format='svg')
