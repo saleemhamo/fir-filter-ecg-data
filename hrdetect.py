@@ -9,8 +9,11 @@ from firfilter import FIRFilter
 def main():
     filtered_ecg, time = get_filtered_ecg()
 
-    start_index = 950
-    end_index = 1600
+    # start_index = 950
+    # end_index = 1600
+
+    start_index = 10400
+    end_index = 11100
 
     # Extract one wavelet
     filtered_ecg_sample = filtered_ecg[start_index:end_index]
@@ -59,7 +62,7 @@ def get_filtered_ecg():
 
     """ 2.b Highpass Filter """
     # Set needed cutoff frequencies
-    cutoff_freq_hp = 10  # Cutoff frequency for high-pass
+    cutoff_freq_hp = 0.5  # Cutoff frequency for high-pass
     coefficients_hp, m = filter_design.highpass_design(sampling_rate, cutoff_freq_hp)
     coefficients_hp = coefficients_hp * np.hamming(m)
 

@@ -32,6 +32,8 @@ def main():
     )
     # TODO: Apply different windows
     coefficients_band_stop = coefficients_band_stop * np.hamming(m)
+    # coefficients_band_stop = coefficients_band_stop * np.hanning(m)
+    # coefficients_band_stop = coefficients_band_stop * np.tri(m)
 
     # Impulse Response (Band-stop)
     impulse_response_time = np.linspace(0, len(coefficients_band_stop), len(coefficients_band_stop))
@@ -39,7 +41,7 @@ def main():
 
     """ 2.b Highpass Filter """
     # Set needed cutoff frequencies
-    cutoff_freq_hp = 10  # Cutoff frequency for high-pass
+    cutoff_freq_hp = 0.5  # Cutoff frequency for high-pass
     coefficients_hp, m = filter_design.highpass_design(sampling_rate, cutoff_freq_hp)
     # TODO: Apply different windows
     coefficients_hp = coefficients_hp * np.hamming(m)
