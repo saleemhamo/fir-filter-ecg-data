@@ -44,11 +44,11 @@ def plot(x, y, title, plot_name='', log_scale=False):
     if log_scale:
         plt.xscale('log')
 
-    plt.show()
-
     if not (plot_name is None or plot_name == ''):
         mkdir_if_not_exists('./output_images')
         plt.savefig('./output_images/' + plot_name + ".svg", format='svg')
+
+    plt.show()
 
 
 """ Frequency domain functions """
@@ -74,8 +74,9 @@ def plot_in_frequency(frequency_values, fft_result, title, plot_name='', log_sca
     plt.title(title)
     plt.xlabel('Frequency (HZ)')
     plt.ylabel('Amplitude')
-    plt.show()
 
     if not (plot_name is None or plot_name == ''):
         mkdir_if_not_exists('./output_images')
         plt.savefig('./output_images/' + plot_name + ".svg", format='svg')
+
+    plt.show()
