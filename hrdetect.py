@@ -2,85 +2,57 @@
 import numpy as np
 
 import helper
-from filterdesign import FilterDesign
 from firfilter import FIRFilter
+from hpbsfilter import main as get_filtered_ecg
 
 
 def main():
-    filtered_ecg, time = get_filtered_ecg()
+    filtered_ecg, time = get_filtered_ecg(False)
+    helper.plot(filtered_ecg, time, 'ECG Data (Filtered - 50Hz & DC removed)')
 
-    # start_index = 950
-    # end_index = 1600
+    wavelet, wavelet_time = extract_wavelet_from_ecg(filtered_ecg)
+    detect_peeks(wavelet, wavelet_time, filtered_ecg, time, 'ECG Data Sample', 'ecg_data')
 
-    start_index = 10400
+    wavelet, wavelet_time = generate_sinc_wavelet()
+    detect_peeks(wavelet, wavelet_time, filtered_ecg, time, 'Sinc Pulse', 'sinc_pulse')
+
+
+def detect_peeks(wavelet, wavelet_time, filtered_ecg, time, wavelet_type, plot_prefix):
+    helper.plot(wavelet, wavelet_time, wavelet_type + ' (Wavelet)', plot_prefix + '_wavelet')
+
+    # Reverse
+    wavelet.reverse()
+    helper.plot(wavelet, wavelet_time, wavelet_type + 'Wavelet (reversed)', plot_prefix + '_wavelet_reversed')
+
+    # Apply Matched Filter
+    matched_filter = FIRFilter(wavelet)
+    peeks = [matched_filter.dofilter(value) for value in filtered_ecg]
+    helper.plot(peeks, time, wavelet_type + ' Detected Peeks after Applying Matched Filter', plot_prefix + 'peeks')
+
+    # Square signal
+    peeks = [n ** 2 for n in peeks]
+    helper.plot(peeks, time, wavelet_type + ' Detected Peeks (after X^2)', plot_prefix + 'peeks_squared')
+
+    # Threshold signal
+    filtered_peeks = [0 if x < 7 else x for x in peeks]
+    helper.plot(filtered_peeks, time, wavelet_type + ' Detected Peeks (after thresholding)',
+                plot_prefix + 'peeks_threshold')
+
+
+def extract_wavelet_from_ecg(filtered_ecg):
+    start_index = 10500
     end_index = 11100
 
     # Extract one wavelet
     filtered_ecg_sample = filtered_ecg[start_index:end_index]
     wavelet_time = helper.convert_to_time(len(filtered_ecg_sample), 1000)
-    helper.plot(filtered_ecg_sample, wavelet_time, 'ECG Data Sample (Wavelet)')
 
-    wavelet = filtered_ecg_sample
-    wavelet.reverse()
-    helper.plot(wavelet, wavelet_time, 'Wavelet (reversed)')
-
-    matched_filter = FIRFilter(wavelet)
-    peeks = [matched_filter.dofilter(value) for value in filtered_ecg]
-
-    helper.plot(peeks, time, 'Detected Peeks after Applying Matched Filter')
-
-    peeks = [n ** 2 for n in peeks]
-
-    helper.plot(peeks, time, 'Detected Peeks (after X^2)')
-
-    filtered_peeks = [0 if x < 7 else x for x in peeks]
-
-    helper.plot(filtered_peeks, time, 'Detected Peeks (after thresholding)')
+    return filtered_ecg_sample, wavelet_time
 
 
-def get_filtered_ecg():
-    """ 1. Original ECG Signal """
-    sampling_rate = 1000
-    ecg_data = helper.read_ecg_data()
-    time = helper.convert_to_time(len(ecg_data), sampling_rate)
-
-    # Plot the original data
-    helper.plot(ecg_data, time, 'ECG Data (Original)', 'ecg_original')
-
-    """ 2. Create FIR filter coefficients """
-    filter_design = FilterDesign()
-
-    """ 2.a Band-stop Filter """
-
-    # Set needed cutoff frequencies
-    cutoff_freq_band_stop_low = 45  # Lower frequency for band-stop
-    cutoff_freq_band_stop_high = 55  # Higher frequency for band-stop
-    coefficients_band_stop, m = filter_design.band_stop_design(
-        sampling_rate, cutoff_freq_band_stop_low, cutoff_freq_band_stop_high
-    )
-    coefficients_band_stop = coefficients_band_stop * np.hamming(m)
-
-    """ 2.b Highpass Filter """
-    # Set needed cutoff frequencies
-    cutoff_freq_hp = 0.5  # Cutoff frequency for high-pass
-    coefficients_hp, m = filter_design.highpass_design(sampling_rate, cutoff_freq_hp)
-    coefficients_hp = coefficients_hp * np.hamming(m)
-
-    """ 3. Process ECG signal """
-
-    # Create FIR Filters
-    fir_filter_band_stop = FIRFilter(coefficients_band_stop)
-    fir_filter_highpass = FIRFilter(coefficients_hp)
-
-    # Band-stop filtration
-    filtered_band_stop_ecg = [fir_filter_band_stop.dofilter(value) for value in ecg_data]
-
-    # Highpass filtration
-    filtered_highpass_ecg = [fir_filter_highpass.dofilter(value) for value in filtered_band_stop_ecg]
-
-    helper.plot(filtered_highpass_ecg, time, 'ECG Data (clean)')
-
-    return filtered_highpass_ecg, time
+def generate_sinc_wavelet():
+    x = np.linspace(-4, 4, 41)
+    return np.sinc(x).tolist(), x
 
 
 if __name__ == '__main__':

@@ -2,12 +2,14 @@ from abc import abstractmethod
 
 import numpy as np
 
+import helper
+
 
 class FilterDesign:
     """
         # sampling_rate: Input, signal frequency
         # f1: Input, highpass cutoff frequency, determine range
-        # M_coefficients: taps, finite (20231031: now don't find a good way to calculate )
+        # M_coefficients: taps, finite
     """
 
     @abstractmethod
@@ -36,11 +38,11 @@ class FilterDesign:
         frequency_response[k1:k2 + 1] = 0
         frequency_response[m_coefficients - k2: m_coefficients - k1 + 1] = 0
 
-        x = np.fft.ifft(frequency_response)
-        x = np.real(x)
+        inverse_fft = np.fft.ifft(frequency_response)
+        inverse_fft = np.real(inverse_fft)
 
         impulse_response = np.zeros(m_coefficients)
-        impulse_response[0:int(m_coefficients / 2)] = x[int(m_coefficients / 2):m_coefficients]
-        impulse_response[int(m_coefficients / 2):m_coefficients] = x[0:int(m_coefficients / 2)]
+        impulse_response[0:int(m_coefficients / 2)] = inverse_fft[int(m_coefficients / 2):m_coefficients]
+        impulse_response[int(m_coefficients / 2):m_coefficients] = inverse_fft[0:int(m_coefficients / 2)]
 
-        return impulse_response, m_coefficients
+        return impulse_response, m_coefficients, frequency_response, inverse_fft
