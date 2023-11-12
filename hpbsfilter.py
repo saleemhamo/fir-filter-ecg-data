@@ -4,6 +4,7 @@ import numpy as np
 import helper
 from filterdesign import FilterDesign
 from firfilter import FIRFilter
+from lmsfilter import filter_signal_lms
 
 
 def main(plot=True):
@@ -75,7 +76,7 @@ def main(plot=True):
     impulse_response_time = np.linspace(0, len(coefficients_hp), len(coefficients_hp))
     if plot:
         helper.plot(
-            inverse_fft, impulse_response_time, 'Impulse Response (Band-stop)', 'hp_impulse_response_1'
+            inverse_fft, impulse_response_time, 'Impulse Response (Highpass)', 'hp_impulse_response_1'
         )
         helper.plot(
             coefficients_hp, impulse_response_time, 'Impulse Response (Highpass)', 'hp_impulse_response'
@@ -130,6 +131,9 @@ def main(plot=True):
             frequency_values_highpass, np.real(fft_result_highpass), 'ECG Data (Filtered - 50Hz & DC removed)',
             'ecg_filtered_hp_frequency'
         )
+
+    """ LMS Adaptive Filter """
+    filter_signal_lms()
 
     return filtered_highpass_ecg, time
 
