@@ -137,7 +137,17 @@ def main(plot=True):
 
     """ LMS Adaptive Filter """
     filtered_signal_lms = filter_signal_lms()
-    filtered_wavelet, wavelet_time = extract_wavelet_from_ecg(filtered_signal_lms, 10260, 10860)
+
+    # Apply Highpass filter
+    fir_filter_highpass = FIRFilter(coefficients_hp)
+    filtered_highpass_ecg_lms = [fir_filter_highpass.dofilter(value) for value in filtered_signal_lms]
+    if plot:
+        helper.plot(
+            filtered_highpass_ecg_lms, time, 'ECG Data (After LMS 50Hz + Highpass Filtration)',
+            'ecg_filtered_lms'
+        )
+
+    filtered_wavelet, wavelet_time = extract_wavelet_from_ecg(filtered_highpass_ecg_lms, 10450, 11050)
     if plot:
         helper.plot(filtered_wavelet, wavelet_time, 'ECG Wavelet (After LMS Filtration)', 'ecg_lms_wavelet')
 
