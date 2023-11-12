@@ -125,17 +125,31 @@ def main(plot=True):
             'ecg_filtered_hb'
         )
     fft_result_highpass, frequency_values_highpass = helper.convert_to_frequency(filtered_highpass_ecg, 1000)
-
     if plot:
         helper.plot_in_frequency(
             frequency_values_highpass, np.real(fft_result_highpass), 'ECG Data (Filtered - 50Hz & DC removed)',
             'ecg_filtered_hp_frequency'
         )
 
+    filtered_wavelet, wavelet_time = extract_wavelet_from_ecg(filtered_highpass_ecg)
+    if plot:
+        helper.plot(filtered_wavelet, wavelet_time, 'ECG Wavelet (After FIR Filtration)', 'ecg_fir_wavelet')
+
     """ LMS Adaptive Filter """
-    filter_signal_lms()
+    filtered_signal_lms = filter_signal_lms()
+    filtered_wavelet, wavelet_time = extract_wavelet_from_ecg(filtered_signal_lms, 10260, 10860)
+    if plot:
+        helper.plot(filtered_wavelet, wavelet_time, 'ECG Wavelet (After LMS Filtration)', 'ecg_lms_wavelet')
 
     return filtered_highpass_ecg, time
+
+
+def extract_wavelet_from_ecg(signal, start_index=10500, end_index=11100):
+    # Extract one wavelet
+    filtered_ecg_sample = signal[start_index:end_index]
+    wavelet_time = helper.convert_to_time(len(filtered_ecg_sample), 1000)
+
+    return filtered_ecg_sample, wavelet_time
 
 
 if __name__ == '__main__':
