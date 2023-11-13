@@ -136,9 +136,11 @@ def main(plot=True):
         helper.plot(filtered_wavelet, wavelet_time, 'ECG Wavelet (After FIR Filtration)', 'ecg_fir_wavelet')
 
     """ LMS Adaptive Filter """
+    print("Filtering ECG data using LMS filter (removing 50Hz)")
     filtered_signal_lms = filter_signal_lms()
 
     # Apply Highpass filter
+    print("Filtering ECG data using Highpass FIR filter (fc: " + str(cutoff_freq_hp) + ")")
     fir_filter_highpass = FIRFilter(coefficients_hp)
     filtered_highpass_ecg_lms = [fir_filter_highpass.dofilter(value) for value in filtered_signal_lms]
     if plot:
