@@ -11,11 +11,26 @@ Another filtration step was performed using the LMS filter, which included gener
 ![image](https://github.com/saleemhamo/fir-filter-ecg-data/assets/55649338/5a88c364-23d0-4852-847a-652d0c4ba6ce)
 
 
-...
-
 ## Task 1: Calculate FIR Coefficients
+In this part, the goal is to build the FIR filter coefficients that will be used in designing the FIR Filter. First, the frequency responses will be calculated, then applied to the ifft function, resulting the impulse repose. After that, the impulse response will be shifted to the time domain (swapped).
+
 ### Band-stop filter design
-...
+![image](https://github.com/saleemhamo/fir-filter-ecg-data/assets/55649338/259ad67e-1907-4b75-a8e2-f5dcd8cb6a61)
+
+The first step was creating the frequency response using python arrays. As the figure below shows:
+
+![image](https://github.com/saleemhamo/fir-filter-ecg-data/assets/55649338/f7d64ac7-b543-4a0b-b03e-b9f7d8f75edf)
+
+After that, the ifft of the frequency response was calculated, to obtain the impulse response.
+
+![image](https://github.com/saleemhamo/fir-filter-ecg-data/assets/55649338/ded52c84-24f3-4d9e-b6b5-b5eaf730a5b3)
+
+Shifting (swapping) to the positive time was performed on the resulted impulse response.
+
+![image](https://github.com/saleemhamo/fir-filter-ecg-data/assets/55649338/04e9fade-3aef-4c1a-9755-a3bbd17987c7)
+
+![image](https://github.com/saleemhamo/fir-filter-ecg-data/assets/55649338/d063341f-afad-44fa-a23e-21396990a053)
+
 
 ### High pass filter design
 ...
