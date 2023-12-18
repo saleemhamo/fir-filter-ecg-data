@@ -1,5 +1,4 @@
-# ENG5027- DIGITAL SIGNAL PROCESSING
-## Assignment 2: FIR Filters
+# FIR Filters Design - ECH Data Filtration
 
 ## Introduction
 This project will analyze ECG signals using FIR filters; initially, the ECG signal (ECG_1000Hz_14.dat) was read using Python. To create a clean ECG signal, a generic FIR filter was first designed. Then, frequency and impulse response for high-pass and band stop filters were computed and applied using the FIR filter logic to eliminate the DC component from the ECG signal as well as the 50Hz signal (noise).
