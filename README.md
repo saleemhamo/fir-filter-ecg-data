@@ -1,29 +1,16 @@
 # ENG5027- DIGITAL SIGNAL PROCESSING
 ## Assignment 2: FIR Filters
 
-## Table of Contents
-- [Table of Contents](#table-of-contents)
-- [Table of Figures](#table-of-figures)
-- [Introduction](#introduction)
-- [Task 1: Calculate FIR Coefficients](#task-1-calculate-fir-coefficients)
-  - [Band-stop filter design](#band-stop-filter-design)
-  - [High pass filter design](#high-pass-filter-design)
-- [Task 2: 50Hz Removal Using High-pass Filter](#task-2-50hz-removal-using-high-pass-filter)
-  - [Design of FIR dofilter](#design-of-fir-dofilter)
-  - [Selecting cutoff frequency](#selecting-cutoff-frequency)
-- [Task 3: 50Hz Removal using Adaptive LMS Filter](#task-3-50hz-removal-using-adaptive-lms-filter)
-- [Task 4: ECG Heartbeat detection using Matched Filter](#task-4-ecg-heartbeat-detection-using-matched-filter)
-  - [First Approach: Extract ECG Wave](#first-approach-extract-ecg-wave)
-  - [Second Approach: Use Sinc Pulse](#second-approach-use-sinc-pulse)
-- [Appendix](#appendix)
-  - [Python Code](#python-code)
-
-## Table of Figures
-- [Figure 1: Original ECG Signal (Time)](#figure-1-original-ecg-signal-time)
-- [Figure 2: Original ECG Signal (Frequency)](#figure-2-original-ecg-signal-frequency)
-- ...
-
 ## Introduction
+This project will analyze ECG signals using FIR filters; initially, the ECG signal (ECG_1000Hz_14.dat) was read using Python. To create a clean ECG signal, a generic FIR filter was first designed. Then, frequency and impulse response for high-pass and band stop filters were computed and applied using the FIR filter logic to eliminate the DC component from the ECG signal as well as the 50Hz signal (noise).
+The clean signal will then be subjected to a matching filter to identify heartbeats. Two approaches were followed: one involved extracting a wavelet from the signal directly, and the other involved using a (Sinc) pulse.
+Another filtration step was performed using the LMS filter, which included generating a 50Hz reference signal and applying an adaptive LMF filter to clean the original one.
+
+![image](https://github.com/saleemhamo/fir-filter-ecg-data/assets/55649338/6cd8405e-de0e-4879-8778-c5f2cdab15f6)
+
+![image](https://github.com/saleemhamo/fir-filter-ecg-data/assets/55649338/5a88c364-23d0-4852-847a-652d0c4ba6ce)
+
+
 ...
 
 ## Task 1: Calculate FIR Coefficients
